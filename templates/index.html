@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hypertension Predictor | Hypertension Risk Assessment</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2.0">
+</head>
+<body>
+    <!-- Animated Background Elements -->
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+
+    <!-- Main Navigation -->
+    <nav class="navbar animate-fade-in">
+        <div class="nav-content">
+            <div class="brand">
+                <div class="brand-icon">
+                    <i class="fas fa-wave-square"></i>
+                </div>
+                <div class="brand-text">
+                    <h1>Hypertension Predictor</h1>
+                    <span>Predictive Health Engine</span>
+                </div>
+            </div>
+            <div class="nav-badges">
+                <span class="pulse-badge"><span class="dot"></span> AI Active</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="app-container">
+        <!-- Left Column: Form -->
+        <main class="assessment-section stagger-1">
+            <div class="glass-card main-form-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-clipboard-user"></i> Patient Assessment Profile</h2>
+                    <p>Enter clinical parameters below for an instant machine learning evaluation.</p>
+                </div>
+
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="alerts-container">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} animate-pop-in">
+                                <i class="fas {% if category == 'error' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i> 
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
+                <form method="POST" action="/predict" class="modern-form" id="assessmentForm">
+                    <div class="form-grid">
+                        <!-- Gender & Age -->
+                        <div class="input-group">
+                            <label><i class="fas fa-venus-mars icon-label"></i> Gender</label>
+                            <select name="Gender" required>
+                                <option value="" disabled {% if not form_data %}selected{% endif %}>Select Gender</option>
+                                <option value="Male" {% if form_data and form_data.Gender == 'Male' %}selected{% endif %}>Male</option>
+                                <option value="Female" {% if form_data and form_data.Gender == 'Female' %}selected{% endif %}>Female</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label><i class="fas fa-hourglass-half icon-label"></i> Age Group</label>
+                            <select name="Age" required>
+                                <option value="" disabled {% if not form_data %}selected{% endif %}>Select Age</option>
+                                <option value="18-34" {% if form_data and form_data.Age == '18-34' %}selected{% endif %}>18-34 years</option>
+                                <option value="35-50" {% if form_data and form_data.Age == '35-50' %}selected{% endif %}>35-50 years</option>
+                                <option value="51-64" {% if form_data and form_data.Age == '51-64' %}selected{% endif %}>51-64 years</option>
+                                <option value="65+" {% if form_data and form_data.Age == '65+' %}selected{% endif %}>65+ years</option>
+                            </select>
+                        </div>
+
+                        <!-- Vitals -->
+                        <div class="input-group">
+                            <label><i class="fas fa-arrow-up icon-label"></i> Systolic Pressure</label>
+                            <select name="Systolic" required>
+                                <option value="" disabled {% if not form_data %}selected{% endif %}>Select Range</option>
+                                <option value="100 - 110" {% if form_data and form_data.Systolic == '100 - 110' %}selected{% endif %}>100-110 mmHg (Normal)</option>
+                                <option value="111 - 120" {% if form_data and form_data.Systolic == '111 - 120' %}selected{% endif %}>111-120 mmHg (Elevated)</option>
+                                <option value="121 - 130" {% if form_data and form_data.Systolic == '121 - 130' %}selected{% endif %}>121-130 mmHg (Stage 1)</option>
+                                <option value="130+" {% if form_data and form_data.Systolic == '130+' %}selected{% endif %}>130+ mmHg (Stage 2/Crisis)</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label><i class="fas fa-arrow-down icon-label"></i> Diastolic Pressure</label>
+                            <select name="Diastolic" required>
+                                <option value="" disabled {% if not form_data %}selected{% endif %}>Select Range</option>
+                                <option value="70 - 80" {% if form_data and form_data.Diastolic == '70 - 80' %}selected{% endif %}>70-80 mmHg (Normal)</option>
+                                <option value="81 - 90" {% if form_data and form_data.Diastolic == '81 - 90' %}selected{% endif %}>81-90 mmHg (Elevated)</option>
+                                <option value="91 - 100" {% if form_data and form_data.Diastolic == '91 - 100' %}selected{% endif %}>91-100 mmHg (Stage 1)</option>
+                                <option value="100+" {% if form_data and form_data.Diastolic == '100+' %}selected{% endif %}>100+ mmHg (Stage 2/Crisis)</option>
+                            </select>
+                        </div>
+
+                        <!-- Medical History -->
+                        <div class="input-group">
+                            <label><i class="fas fa-users icon-label"></i> Family History</label>
+                            <select name="History" required>
+                                <option value="" disabled {% if not form_data %}selected{% endif %}>Hypertension History?</option>
+                                <option value="Yes" {% if form_data and form_data.History == 'Yes' %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if form_data and form_data.History == 'No' %}selected{% endif %}>No</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label><i class="fas fa-calendar-check icon-label"></i> Time Since Diagnosis</label>
+                            <select name="Whendiagnoused" required>
+                                <option value="" disabled {% if not form_data %}selected{% endif %}>Select Duration</option>
+                                <option value="<1 Year" {% if form_data and form_data.Whendiagnoused == '<1 Year' %}selected{% endif %}>Less than 1 Year</option>
+                                <option value="1 - 5 Years" {% if form_data and form_data.Whendiagnoused == '1 - 5 Years' %}selected{% endif %}>1 - 5 Years</option>
+                                <option value=">5 Years" {% if form_data and form_data.Whendiagnoused == '>5 Years' %}selected{% endif %}>More than 5 Years</option>
+                            </select>
+                        </div>
+
+                        <!-- Current Status -->
+                        <div class="input-group">
+                            <label><i class="fas fa-user-md icon-label"></i> Under Medical Care</label>
+                            <select name="Patient" required>
+                                <option value="" disabled {% if not form_data %}selected{% endif %}>Current Patient?</option>
+                                <option value="Yes" {% if form_data and form_data.Patient == 'Yes' %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if form_data and form_data.Patient == 'No' %}selected{% endif %}>No</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label><i class="fas fa-pills icon-label"></i> Taking BP Medication</label>
+                            <select name="TakeMedication" required>
+                                <option value="" disabled {% if not form_data %}selected{% endif %}>On Medication?</option>
+                                <option value="Yes" {% if form_data and form_data.TakeMedication == 'Yes' %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if form_data and form_data.TakeMedication == 'No' %}selected{% endif %}>No</option>
+                            </select>
+                        </div>
+
+                        <!-- Symptoms -->
+                        <div class="input-group">
+                            <label><i class="fas fa-lungs icon-label"></i> Shortness of Breath</label>
+                            <select name="BreathShortness" required>
+                                <option value="" disabled {% if not form_data %}selected{% endif %}>Select Option</option>
+                                <option value="Yes" {% if form_data and form_data.BreathShortness == 'Yes' %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if form_data and form_data.BreathShortness == 'No' %}selected{% endif %}>No</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label><i class="fas fa-eye icon-label"></i> Vision Changes</label>
+                            <select name="VisualChanges" required>
+                                <option value="" disabled {% if not form_data %}selected{% endif %}>Select Option</option>
+                                <option value="Yes" {% if form_data and form_data.VisualChanges == 'Yes' %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if form_data and form_data.VisualChanges == 'No' %}selected{% endif %}>No</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label><i class="fas fa-droplet icon-label"></i> Frequent Nosebleeds</label>
+                            <select name="NoseBleeding" required>
+                                <option value="" disabled {% if not form_data %}selected{% endif %}>Select Option</option>
+                                <option value="Yes" {% if form_data and form_data.NoseBleeding == 'Yes' %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if form_data and form_data.NoseBleeding == 'No' %}selected{% endif %}>No</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label><i class="fas fa-face-frown icon-label"></i> Symptom Severity</label>
+                            <select name="Severity" required>
+                                <option value="" disabled {% if not form_data %}selected{% endif %}>Overall Severity</option>
+                                <option value="Mild" {% if form_data and form_data.Severity == 'Mild' %}selected{% endif %}>Mild</option>
+                                <option value="Moderate" {% if form_data and form_data.Severity == 'Moderate' %}selected{% endif %}>Moderate</option>
+                                <option value="Severe" {% if form_data and form_data.Severity == 'Severe' %}selected{% endif %}>Severe</option>
+                            </select>
+                        </div>
+
+                        <!-- Lifestyle -->
+                        <div class="input-group full-width">
+                            <label><i class="fas fa-apple-whole icon-label"></i> Heart-Healthy Diet</label>
+                            <select name="ControlledDiet" required>
+                                <option value="" disabled {% if not form_data %}selected{% endif %}>Following Diet?</option>
+                                <option value="Yes" {% if form_data and form_data.ControlledDiet == 'Yes' %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if form_data and form_data.ControlledDiet == 'No' %}selected{% endif %}>No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="submitBtn">
+                        <span class="btn-text">Run ML Analysis</span>
+                        <i class="fas fa-microchip"></i>
+                        <div class="loader hidden" id="btnLoader"></div>
+                    </button>
+                </form>
+            </div>
+        </main>
+
+        <!-- Right Column: Results & Info -->
+        <aside class="results-section stagger-2">
+            
+            {% if recommendation %}
+            <!-- Dynamic Result Card -->
+            <div class="glass-card result-card animate-slide-up" id="resultBlock" style="--dynamic-color: {{ result_color }};">
+                <div class="result-glow" style="background: {{ result_color }};"></div>
+                
+                <div class="result-header">
+                    <div class="status-icon" style="color: {{ result_color }};">
+                        <i class="fas fa-heart-pulse"></i>
+                    </div>
+                    <div>
+                        <h3 style="color: {{ result_color }};">{{ recommendation.title }}</h3>
+                        <div class="metrics">
+                            <span class="badge" style="background: {{ result_color }}20; color: {{ result_color }}; border: 1px solid {{ result_color }}50;">
+                                {{ recommendation.priority }}
+                            </span>
+                            <span class="confidence-score">
+                                <i class="fas fa-crosshairs"></i> {{ "%.1f"|format(confidence) }}% Accuracy
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="result-description">{{ recommendation.description }}</p>
+
+                <div class="action-plan">
+                    <h4><i class="fas fa-list-check"></i> Recommended Action Plan</h4>
+                    <ul>
+                        {% for action in recommendation.actions %}
+                        <li style="border-left-color: {{ result_color }};">
+                            <i class="fas fa-check-circle" style="color: {{ result_color }};"></i>
+                            {{ action }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% else %}
+            <!-- Placeholder Info Card (Shows before prediction) -->
+            <div class="glass-card info-card">
+                <div class="info-icon">
+                    <i class="fas fa-shield-heart"></i>
+                </div>
+                <h3>Awaiting Data</h3>
+                <p>Complete the assessment on the left to generate a personalized cardiovascular risk profile.</p>
+                
+                <div class="system-features">
+                    <div class="feature"><i class="fas fa-brain"></i> Advanced ML Algorithms</div>
+                    <div class="feature"><i class="fas fa-bolt"></i> Real-time Processing</div>
+                    <div class="feature"><i class="fas fa-lock"></i> Privacy Preserved</div>
+                </div>
+            </div>
+            {% endif %}
+
+        </aside>
+    </div>
+
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='script.js') }}?v=1.0"></script>
+</body>
+</html>
