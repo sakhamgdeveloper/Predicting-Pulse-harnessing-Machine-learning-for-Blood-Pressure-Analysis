@@ -8,7 +8,7 @@ A high-performance machine learning web application designed for cardiovascular 
 
 <img width="1410" height="1019" alt="image" src="https://github.com/user-attachments/assets/a32def71-087d-4c9f-a6a4-e253a9823e40" />
 <img width="1244" height="1011" alt="Screenshot 2026-03-16 234629" src="https://github.com/user-attachments/assets/738429f1-bc56-4f14-9b07-6a0aa9bfdff0" />
-<img width="1244" height="1011" alt="Screenshot 2026-03-16 234629" src="https://github.com/user-attachments/assets/738429f1-bc56-4f14-9b07-6a0aa9bfdff0" />
+
 
 <img width="1255" height="1007" alt="image" src="https://github.com/user-attachments/assets/0f796432-3da5-443a-82f6-ef358f479117" />
 <img width="1279" height="1013" alt="image" src="https://github.com/user-attachments/assets/90bb34a6-39b3-4e63-8736-fe29061a9338" />
